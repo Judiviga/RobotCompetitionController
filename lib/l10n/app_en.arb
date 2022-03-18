@@ -1,0 +1,110 @@
+{
+    "settings": "Settings",
+    "@settings": {
+        "description": ""
+    },
+    "disabled": "Bluetooth Disabled",
+    "@disabled": {
+        "description": ""
+    },
+    "disconnected": "Disconnected",
+    "@disconnected": {
+        "description": ""
+    },
+    "connected": "Connected",
+    "@connected": {
+        "description": ""
+    },
+    "profile": "Select Profile",
+    "@profile": {
+        "description": ""
+    },
+    "name": "Name",
+    "@name": {
+        "description": ""
+    },
+    "nameEdit": "Edit profile name",
+    "@nameEdit": {
+        "description": ""
+    },
+    "device": "Device",
+    "@device": {
+        "description": ""
+    },
+    "deviceNew": "New Device",
+    "@deviceNew": {
+        "description": ""
+    },
+    "reverseL": "Reverse Left",
+    "@reverseL": {
+        "description": ""
+    },
+    "reverseR": "Reverse Right",
+    "@reverseR": {
+        "description": ""
+    },
+    "speedMin": "Min Speed [PWM]",
+    "@speedMin": {
+        "description": ""
+    },
+    "speedMinMessage": "Lowest speed to start movement",
+    "@speedMinMessage": {
+        "description": ""
+    },
+    "speedMax": "Max Speed [PWM]",
+    "@speedMax": {
+        "description": ""
+    },
+    "speedMaxMessage": "Highest value for the PWM, lower this value to limit the speed of the robot",
+    "@speedMaxMessage": {
+        "description": ""
+    },
+    "accel": "Acceleration Factor",
+    "@accel": {
+        "description": ""
+    },
+    "accelMessage": "Limiting the aceleration helps the robot run straighter and softer",
+    "@accelMessage": {
+        "description": ""
+    },
+    "rotation": "Rotating Speed Factor",
+    "@rotation": {
+        "description": ""
+    },
+    "rotationMessage": "This factor determines how fast the robot turn",
+    "@rotationMessage": {
+        "description": ""
+    },
+    "correction": "Correction Factor",
+    "@correction": {
+        "description": ""
+    },
+    "correctionMessage": "Use this factor to straighten the robot. Increase the value if the robot tilts to the left and lower it if it tilts to the right",
+    "@correctionMessage": {
+        "description": ""
+    },
+    "reset": "Reset Parameters",
+    "@reset": {
+        "description": ""
+    },
+    "resetMessage": "Restore default values",
+    "@resetMessage": {
+        "description": ""
+    },
+    "deleteMessage": "Delete the current profile",
+    "@deleteMessage": {
+        "description": ""
+    },
+    "delete": "Delete Profile",
+    "@delete": {
+        "description": ""
+    },
+    "cancel": "Cancel",
+    "@cancel": {
+        "description": ""
+    },
+    "confirm": "Confirm",
+    "@confirm": {
+        "description": ""
+    }
+}
