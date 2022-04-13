@@ -20,6 +20,10 @@ class Robot {
   double rightJoystick = 0;
   bool sending = true;
 
+  int red = 0;
+  int green = 0;
+  int blue = 0;
+
   bool stoppedL = true;
   bool stoppedR = true;
   bool stopped = true;
@@ -29,20 +33,21 @@ class Robot {
   double turnFactor = 0.20;
   double correction = 0.97;
 
-  StreamSubscription? listener;
+  StreamSubscription? stateListener;
+  StreamSubscription? inputListener;
   RobotSettings settings;
 
   Robot(this.settings) {
     turnFactor = settings.turnFactor;
     correction = settings.correction;
-    listener = bluetooth.getState.listen(
+    stateListener = bluetooth.getState.listen(
       (BlueState state) {
         blueOn = state.enabled;
         connected = state.connected;
       },
     );
     connect(settings.address);
-    drive();
+    drive(leftJoystick, rightJoystick);
   }
 
   Future connect(String address) async {
@@ -52,15 +57,16 @@ class Robot {
   Future disconnect() async {
     sending = false;
     await bluetooth.disconnect();
-    listener!.cancel();
+    stateListener!.cancel();
+    inputListener!.cancel();
   }
 
-  void drive() {
+  void drive(double forward, double turn) {
     int millis = 1000 ~/ settings.hz;
 
     Timer.periodic(Duration(milliseconds: millis), (timer) {
-      double y = leftJoystick * settings.maxPWM / 100;
-      double x = rightJoystick * settings.maxPWM / 100;
+      double y = forward * settings.maxPWM / 100;
+      double x = turn * settings.maxPWM / 100;
 
       _moveState state = getState(y, x);
       double targetL = y - x;
@@ -167,7 +173,7 @@ class Robot {
           state.toString());
           */
       if (sending && blueOn && connected) {
-        output(outL, outR);
+        output(outL, outR, red, green, blue);
       }
     });
   }
@@ -208,11 +214,14 @@ class Robot {
     }
   }
 
-  void output(double outL, double outR) {
+  void output(double outL, double outR, int r, int g, int b) {
     String val1 = outR.round().toString();
     String val2 = outL.round().toString();
+    String val3 = r.toString();
+    String val4 = g.toString();
+    String val5 = b.toString();
 
-    String message = val1 + ',' + val2;
+    String message = val1 + ',' + val2 + ',' + val3 + ',' + val4 + ',' + val5;
     bluetooth.send(message);
   }
 

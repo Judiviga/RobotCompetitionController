@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:joystick/pages/code_page.dart';
 import 'package:joystick/pages/settings_page.dart';
 import 'package:joystick/constants.dart';
 import 'package:joystick/pages/joystick_page.dart';
@@ -31,6 +32,7 @@ class Controller extends StatelessWidget {
       home: JoystickPage(),
       routes: {
         JoystickPage.id: (context) => JoystickPage(),
+        CodePage.id: (context) => CodePage(),
         BluetoothPage.id: (context) => BluetoothPage(),
       },
       localizationsDelegates: [

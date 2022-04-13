@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:joystick/pages/settings_page.dart';
 import 'package:joystick/constants.dart';
+import 'package:joystick/widgets/color_picker.dart';
 import 'package:joystick/widgets/horizontal_joystick.dart';
 import 'package:joystick/widgets/indicator.dart';
 import 'package:joystick/models/robot_interface.dart';
@@ -16,7 +17,7 @@ class JoystickPage extends StatefulWidget {
 class _JoystickPageState extends State<JoystickPage> {
   Robot robot = Robot(settingsList[activeSettings]);
 
-  double rightLong = 0.5;
+  double rightLong = 0.45;
   double leftThick = 0.2;
 
   @override
@@ -57,9 +58,22 @@ class _JoystickPageState extends State<JoystickPage> {
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: [
-                      const Expanded(
-                        child: CircleBoton(
-                          text: 'B',
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            RotatedBox(
+                              quarterTurns: -1,
+                              child: ColorPicker(
+                                width: 200,
+                                callback: (R, G, B) {
+                                  robot.red = R;
+                                  robot.green = G;
+                                  robot.blue = B;
+                                },
+                              ),
+                            ),
+                          ],
                         ),
                       ),
                       Expanded(
