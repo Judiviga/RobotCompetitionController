@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:joystick/pages/code_page.dart';
 import 'package:joystick/pages/settings_page.dart';
 import 'package:joystick/constants.dart';
 import 'package:joystick/widgets/color_picker.dart';
@@ -15,8 +16,6 @@ class JoystickPage extends StatefulWidget {
 }
 
 class _JoystickPageState extends State<JoystickPage> {
-  Robot robot = Robot(settingsList[activeSettings]);
-
   double rightLong = 0.45;
   double leftThick = 0.2;
 
@@ -27,7 +26,6 @@ class _JoystickPageState extends State<JoystickPage> {
 
   @override
   void dispose() {
-    robot.disconnect();
     super.dispose();
   }
 
@@ -92,12 +90,14 @@ class _JoystickPageState extends State<JoystickPage> {
                               child: Boton(
                                 text: texts.settings,
                                 onTap: () {
+                                  /*
                                   Navigator.pushNamed(context, BluetoothPage.id)
                                       .then((value) {
                                     robot.updateSetting(
                                         settingsList[activeSettings]);
                                     setState(() {});
-                                  });
+                                  });*/
+                                  Navigator.pushNamed(context, CodePage.id);
                                 },
                               ),
                             ),

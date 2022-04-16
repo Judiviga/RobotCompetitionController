@@ -19,7 +19,7 @@ void main() async {
     settingsList = await SettingsStorage.getList();
     activeSettings = SettingsStorage.loadActive();
     // SettingsStorage.deleteSetting('1');
-    activeSettings = 0;
+    //activeSettings = 0;
     runApp(Controller());
   });
 }
@@ -29,7 +29,7 @@ class Controller extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Control Pad',
-      home: JoystickPage(),
+      home: CodePage(),
       routes: {
         JoystickPage.id: (context) => JoystickPage(),
         CodePage.id: (context) => CodePage(),
@@ -45,6 +45,9 @@ class Controller extends StatelessWidget {
         Locale('en', ''), // English, no country code
         Locale('es', ''), // Spanish, no country code
       ],
+      theme: ThemeData(
+        colorScheme: ColorScheme.fromSwatch().copyWith(secondary: kWidgetColor),
+      ),
     );
   }
 }
