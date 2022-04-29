@@ -10,13 +10,13 @@ import 'package:joystick/models/settings_storage.dart';
 import 'package:joystick/widgets/show_alert.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
-class BluetoothPage extends StatefulWidget {
-  static const String id = 'BluetoothPage';
+class SettingsPage extends StatefulWidget {
+  static const String id = 'SettingsPage';
   @override
   _BluetoothPage createState() => _BluetoothPage();
 }
 
-class _BluetoothPage extends State<BluetoothPage> {
+class _BluetoothPage extends State<SettingsPage> {
   bool _enabled = false;
   StreamSubscription? listener;
   RobotSettings currentRobot = settingsList[activeSettings];

@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:joystick/constants.dart';
+import 'package:joystick/models/blocks/drive.dart';
 import 'package:joystick/models/blocks/rgb.dart';
-import 'package:joystick/models/robot_interface.dart';
+import 'package:joystick/models/blocks/turn.dart';
+import 'package:joystick/models/blocks/wait.dart';
 import 'package:joystick/widgets/indicator.dart';
 
 List<String> _codeLines = [''];
@@ -24,6 +26,10 @@ class CodePage extends StatefulWidget {
 
 class _CodePageState extends State<CodePage> {
   double bottomSheetSize = 0;
+  final ScrollController _bottomController = ScrollController();
+  final ScrollController _mainController = ScrollController();
+  int draggingTo = -1;
+  bool running = false;
 
   @override
   Widget build(BuildContext context) {
@@ -34,10 +40,12 @@ class _CodePageState extends State<CodePage> {
       _dragging = true;
     }
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       backgroundColor: kBackgroundColor,
       appBar: AppBar(
         centerTitle: true,
         backgroundColor: kWidgetColor,
+        title: Text('Code'),
       ),
       bottomSheet: Container(
         height: bottomSheetSize,
@@ -45,32 +53,34 @@ class _CodePageState extends State<CodePage> {
           color: kWidgetColor,
           boxShadow: <BoxShadow>[
             BoxShadow(
-                color: Colors.black54,
-                blurRadius: 15.0,
-                offset: Offset(0.0, -0.75))
+              color: Colors.black54,
+              blurRadius: 15.0,
+              offset: Offset(0.0, -0.75),
+            )
           ],
         ),
         child: !_trashOn
-            ? Row(
-                children: [
-                  Draggable<DragData>(
-                    feedback: Material(
-                      color: Colors.transparent,
-                      child: RGBModel('RGB,255,0,0'),
-                    ),
-                    child: RGBModel('RGB,255,0,0'),
-                    maxSimultaneousDrags: 1,
-                    data: DragData(id: 'RGB,255,0,0', index: -1),
-                    onDragStarted: () {
-                      _dragging = true;
-                      setState(() {});
-                    },
-                    onDragEnd: (e) {
-                      _dragging = false;
-                      setState(() {});
-                    },
+            ? Scrollbar(
+                controller: _bottomController,
+                isAlwaysShown: true,
+                radius: Radius.circular(15 / 2),
+                child: SingleChildScrollView(
+                  controller: _bottomController,
+                  scrollDirection: Axis.horizontal,
+                  child: Row(
+                    children: [
+                      SizedBox(width: 10),
+                      buildNewBlock('RGB,255,0,0'),
+                      SizedBox(width: 10),
+                      buildNewBlock('Wait,1000'),
+                      SizedBox(width: 10),
+                      buildNewBlock('Drive,20'),
+                      SizedBox(width: 10),
+                      buildNewBlock('Turn,20'),
+                      SizedBox(width: 10),
+                    ],
                   ),
-                ],
+                ),
               )
             : DragTarget<DragData>(
                 builder: (
@@ -78,7 +88,20 @@ class _CodePageState extends State<CodePage> {
                   List<dynamic> accepted,
                   List<dynamic> rejected,
                 ) {
-                  return Container();
+                  return Container(
+                    width: screenWidth,
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(
+                          Icons.delete,
+                          size: 90,
+                          color: Color.fromARGB(255, 200, 1, 1),
+                        ),
+                        Text('Delete', style: kBotonText)
+                      ],
+                    ),
+                  );
                 },
                 onAccept: (DragData incoming) {
                   _codeLines.removeAt(incoming.index);
@@ -91,57 +114,125 @@ class _CodePageState extends State<CodePage> {
       ),
       floatingActionButton: Align(
         alignment: Alignment(1, 0.47),
-        child: FloatingActionButton(
-          child: Icon(Icons.play_arrow),
-          backgroundColor: Colors.green,
-          onPressed: () {
-            //loop();
-            setState(() {});
-            print(_codeLines);
-          },
-        ),
+        child: !running
+            ? FloatingActionButton(
+                child: Icon(Icons.play_arrow),
+                backgroundColor: Colors.green,
+                onPressed: () {
+                  loop();
+                },
+              )
+            : FloatingActionButton(
+                child: Icon(Icons.stop),
+                backgroundColor: Colors.redAccent,
+                onPressed: () {
+                  stop();
+                },
+              ),
       ),
       body: Padding(
         padding: EdgeInsets.only(bottom: bottomSheetSize),
-        child: Center(
-          child: SingleChildScrollView(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(vertical: 80),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                mainAxisAlignment: MainAxisAlignment.center,
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  /*Boton(
-                    onTap: () {
-                      functionsList.add(() {
-                        Code.setColor(0, 0, 255);
-                      });
-                    },
-                    text: 'B',
-                  ),*/
-                  Center(
-                    child: Column(children: [
-                      for (int i = 0; i < _codeLines.length; i++)
-                        buildOutputTarget(i),
-                    ]),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            RotatedBox(
+                quarterTurns: 1, child: Indicator(name: robot.settings.name)),
+            Expanded(
+              child: Center(
+                child: Scrollbar(
+                  controller: _mainController,
+                  isAlwaysShown: true,
+                  child: SingleChildScrollView(
+                    controller: _mainController,
+                    primary: false,
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 80),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              /*
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  for (int i = 0; i < _codeLines.length; i++)
+                                    buildOutputTarget(i),
+                                ],
+                              )*/
+                              ListView.builder(
+                                primary: false,
+                                physics: NeverScrollableScrollPhysics(),
+                                shrinkWrap: true,
+                                itemCount: _codeLines.length,
+                                itemBuilder: (BuildContext context, int i) {
+                                  if (i == draggingTo) {
+                                    return Column(
+                                      children: [
+                                        Divider(
+                                          height: 5,
+                                          thickness: 5,
+                                          color: kBackgroundColor,
+                                        ),
+                                        buildOutputTarget(i),
+                                      ],
+                                    );
+                                  }
+                                  return Column(
+                                    children: [
+                                      buildOutputTarget(i),
+                                    ],
+                                  );
+                                },
+                              )
+                            ],
+                          )
+                        ],
+                      ),
+                    ),
                   ),
-                ],
+                ),
               ),
             ),
-          ),
+          ],
         ),
       ),
     );
   }
 
-  List<Function> functionsList = List<Function>.empty(growable: true);
+  List<Function> functionsList() {
+    List<Function> list = List<Function>.empty(growable: true);
+    for (String id in _codeLines) {
+      list.add(codeFunctions(id));
+    }
+    return list;
+  }
 
   void loop() {
-    print(functionsList);
-    Future.forEach(functionsList, (Function step) async {
-      await step();
+    running = true;
+    setState(() {});
+    List<Function> code = functionsList();
+    Future.forEach(code, (Function step) async {
+      if (running) {
+        await step();
+      } else {
+        return true;
+      }
+    }).then((value) {
+      running = false;
+      setState(() {});
     });
+  }
+
+  void stop() {
+    running = false;
+    setState(() {});
+    DriveModel('Drive,0').function();
+    TurnModel('Turn,0').function();
   }
 
   DragTarget<DragData> buildOutputTarget(int index) {
@@ -151,7 +242,8 @@ class _CodePageState extends State<CodePage> {
         List<dynamic> accepted,
         List<dynamic> rejected,
       ) {
-        Widget widget = buildBlock(index);
+        Widget widget =
+            buildBlock(DragData(index: index, id: _codeLines[index]));
         return Draggable<DragData>(
           onDragStarted: () {
             _dragging = true;
@@ -162,15 +254,6 @@ class _CodePageState extends State<CodePage> {
             _trashOn = false;
             _dragging = false;
             setState(() {});
-          },
-          onDragCompleted: () {
-            /*
-            _codeLines.removeAt(index);
-            if (_codeLines.length == 2) {
-              _codeLines.removeLast();
-            }
-            setState(() {});
-            */
           },
           childWhenDragging: Container(
             height: 52,
@@ -189,6 +272,26 @@ class _CodePageState extends State<CodePage> {
           maxSimultaneousDrags: _codeLines[index].isEmpty ? 0 : 1,
         );
       },
+      onMove: (DragTargetDetails data) {
+        int incoming = data.data.index;
+        
+        if (data.data.index > 0) {
+          if (data.data.index < index) {
+            draggingTo = index;
+          } else {
+            draggingTo = index + 1;
+          }
+        } else if (index == _codeLines.length) {
+        } else {
+          draggingTo = index;
+        }
+
+        setState(() {});
+      },
+      onLeave: (data) {
+        draggingTo = -1;
+        setState(() {});
+      },
       onWillAccept: (DragData? incoming) {
         if (incoming!.id == _codeLines[index]) {
           return false;
@@ -200,7 +303,7 @@ class _CodePageState extends State<CodePage> {
       },
       onAccept: (DragData incoming) {
         List<String> initial = List.from(_codeLines);
-        _codeLines[index ] = incoming.id;
+        _codeLines[index] = incoming.id;
         if (incoming.index >= 0) {
           if (incoming.index > index) {
             for (int i = index + 1; i <= incoming.index; i++) {
@@ -221,25 +324,83 @@ class _CodePageState extends State<CodePage> {
           }
           _codeLines.add('');
         }
+        if (index == initial.length - 1) {
+          _mainController.jumpTo(
+            _mainController.position.maxScrollExtent,
+          );
+        }
+        draggingTo = -1;
         setState(() {});
       },
     );
   }
 
-  Widget buildBlock(int index) {
-    String id = _codeLines[index];
-    var type = id.split(',')[0];
+  Widget buildBlock(DragData data) {
+    String id = data.id;
+    String type = id.split(',')[0];
     if (type == 'RGB') {
       return RGBModel(
+        data.id,
+        onChange: data.index >= 0
+            ? (newId) {
+                _codeLines[data.index] = newId;
+                setState(() {});
+              }
+            : null,
+      );
+    } else if (type == 'Wait') {
+      return WaitModel(
         id,
-        onChange: (newId) {
-          _codeLines[index] = newId;
-          setState(() {});
-        },
+        onChange: data.index >= 0
+            ? (newId) {
+                _codeLines[data.index] = newId;
+                setState(() {});
+              }
+            : null,
+      );
+    } else if (type == 'Drive') {
+      return DriveModel(
+        id,
+        onChange: data.index >= 0
+            ? (newId) {
+                _codeLines[data.index] = newId;
+                setState(() {});
+              }
+            : null,
+      );
+    } else if (type == 'Turn') {
+      return TurnModel(
+        id,
+        onChange: data.index >= 0
+            ? (newId) {
+                _codeLines[data.index] = newId;
+                setState(() {});
+              }
+            : null,
       );
     } else {
       return EmptyOutputBlock();
     }
+  }
+
+  Widget buildNewBlock(String id) {
+    return Draggable<DragData>(
+      feedback: Material(
+        color: Colors.transparent,
+        child: buildBlock(DragData(index: -1, id: id)),
+      ),
+      child: buildBlock(DragData(index: -1, id: id)),
+      maxSimultaneousDrags: 1,
+      data: DragData(id: id, index: -1),
+      onDragStarted: () {
+        _dragging = true;
+        setState(() {});
+      },
+      onDragEnd: (e) {
+        _dragging = false;
+        setState(() {});
+      },
+    );
   }
 }
 
@@ -273,47 +434,26 @@ class Code {
   }
 }
 
-class Boton extends StatelessWidget {
-  final Function onTap;
-  final String text;
+Function codeFunctions(String id) {
+  var type = id.split(',')[0];
 
-  Boton({required this.onTap, required this.text});
-
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () {
-        onTap();
-      },
-      child: Container(
-        color: Colors.transparent,
-        child: Center(
-          child: Container(
-            height: screenWidth! * 0.35,
-            width: screenWidth! * 0.35,
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              color: kWidgetColor,
-              border: Border.all(
-                color: Colors.white,
-                width: 0.5,
-              ),
-            ),
-            child: RotatedBox(
-              quarterTurns: -1,
-              child: Center(
-                child: Text(
-                  text,
-                  style: const TextStyle(
-                    color: Colors.white,
-                    fontSize: 60,
-                  ),
-                ),
-              ),
-            ),
-          ),
-        ),
-      ),
-    );
+  if (type == 'RGB') {
+    return () {
+      RGBModel(id).function();
+    };
+  } else if (type == 'Wait') {
+    return () async {
+      await WaitModel(id).function();
+    };
+  } else if (type == 'Drive') {
+    return () {
+      DriveModel(id).function();
+    };
+  } else if (type == 'Turn') {
+    return () {
+      TurnModel(id).function();
+    };
+  } else {
+    return () {};
   }
 }

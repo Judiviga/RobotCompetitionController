@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:joystick/pages/code_page.dart';
-import 'package:joystick/pages/settings_page.dart';
+import 'package:flutter/services.dart';
 import 'package:joystick/constants.dart';
+import 'package:joystick/pages/settings_page.dart';
 import 'package:joystick/widgets/color_picker.dart';
 import 'package:joystick/widgets/horizontal_joystick.dart';
 import 'package:joystick/widgets/indicator.dart';
-import 'package:joystick/models/robot_interface.dart';
 import 'package:joystick/widgets/vertical_joystick.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:fullscreen/fullscreen.dart';
 
 class JoystickPage extends StatefulWidget {
   static const String id = 'JoystickPage';
@@ -21,6 +21,7 @@ class _JoystickPageState extends State<JoystickPage> {
 
   @override
   void initState() {
+    FullScreen.enterFullScreen(FullScreenMode.EMERSIVE_STICKY);
     super.initState();
   }
 
@@ -90,14 +91,14 @@ class _JoystickPageState extends State<JoystickPage> {
                               child: Boton(
                                 text: texts.settings,
                                 onTap: () {
-                                  /*
-                                  Navigator.pushNamed(context, BluetoothPage.id)
+                                  FullScreen.exitFullScreen();
+                                  /*  Navigator.pushNamed(context, InitialPage.id)
                                       .then((value) {
                                     robot.updateSetting(
                                         settingsList[activeSettings]);
                                     setState(() {});
                                   });*/
-                                  Navigator.pushNamed(context, CodePage.id);
+                                  Navigator.pop(context);
                                 },
                               ),
                             ),
@@ -206,6 +207,7 @@ class Boton extends StatelessWidget {
     return GestureDetector(
       child: Container(
         width: 40,
+        height: 150,
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(20),
           border: Border.all(
