@@ -106,5 +106,13 @@
     "confirm": "Confirm",
     "@confirm": {
         "description": ""
+    },
+    "discoveringDevices": "Discovering devices",
+    "@discoveringDevices": {
+        "description": ""
+    },
+    "discoveredDevices": "Discovered devices",
+    "@discoveredDevices": {
+        "description": ""
     }
 }

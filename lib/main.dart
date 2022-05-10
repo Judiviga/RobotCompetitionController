@@ -11,8 +11,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual,
-      overlays: [SystemUiOverlay.bottom, SystemUiOverlay.top]);
+  //SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
   SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,
   ]).then((_) async {
@@ -31,7 +30,7 @@ class Controller extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Control Pad',
-      home: InitialPage(),
+      home: JoystickPage(),
       // onGenerateRoute: ,
       routes: {
         JoystickPage.id: (context) {

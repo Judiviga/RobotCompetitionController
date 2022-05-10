@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:joystick/constants.dart';
 import 'package:joystick/pages/settings_page.dart';
 import 'package:joystick/widgets/color_picker.dart';
@@ -16,12 +15,12 @@ class JoystickPage extends StatefulWidget {
 }
 
 class _JoystickPageState extends State<JoystickPage> {
-  double rightLong = 0.45;
-  double leftThick = 0.2;
+  int rightLong = 50;
+  int leftThick = 22;
 
   @override
   void initState() {
-    FullScreen.enterFullScreen(FullScreenMode.EMERSIVE_STICKY);
+    robot.green = 255;
     super.initState();
   }
 
@@ -40,101 +39,69 @@ class _JoystickPageState extends State<JoystickPage> {
       screenWidth = MediaQuery.of(context).size.height;
     }
     AppLocalizations texts = AppLocalizations.of(context)!;
-
+    FullScreen.enterFullScreen(FullScreenMode.EMERSIVE_STICKY);
     return Scaffold(
       backgroundColor: kBackgroundColor,
       body: Column(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           Expanded(
-            flex: 8,
+            flex: rightLong,
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              crossAxisAlignment: CrossAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                Expanded(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            RotatedBox(
-                              quarterTurns: -1,
-                              child: ColorPicker(
-                                width: 200,
-                                callback: (R, G, B) {
-                                  robot.red = R;
-                                  robot.green = G;
-                                  robot.blue = B;
-                                },
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                      Expanded(
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          crossAxisAlignment: CrossAxisAlignment.stretch,
-                          children: [
-                            Padding(
-                              padding: const EdgeInsets.symmetric(vertical: 20),
-                              child: Indicator(
-                                name: robot.settings.name,
-                              ),
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.symmetric(vertical: 80),
-                              child: Boton(
-                                text: texts.settings,
-                                onTap: () {
-                                  FullScreen.exitFullScreen();
-                                  /*  Navigator.pushNamed(context, InitialPage.id)
-                                      .then((value) {
-                                    robot.updateSetting(
-                                        settingsList[activeSettings]);
-                                    setState(() {});
-                                  });*/
-                                  Navigator.pop(context);
-                                },
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
+                Indicator(
+                  name: robot.settings.name,
+                ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 80),
+                  child: Boton(
+                    text: texts.settings,
+                    onTap: () {
+                      // FullScreen.exitFullScreen();
+                      Navigator.pushNamed(context, SettingsPage.id)
+                          .then((value) async {
+                        await robot.updateSetting(settingsList[activeSettings]);
+                        setState(() {});
+                      });
+                      // Navigator.pop(context);
+                    },
                   ),
                 ),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.end,
-                    children: [
-                      VerticalJoystick(
-                        long: screenHeight! * rightLong,
-                        thickness: screenHeight! * 0.2,
-                        callback: (val) {
-                          robot.rightJoystick = val;
-                        },
-                      ),
-                      const Expanded(
-                        child: CircleBoton(
-                          text: 'A',
-                        ),
-                      )
-                    ],
-                  ),
+                VerticalJoystick(
+                  long: screenHeight! * rightLong.toDouble() / 100,
+                  thickness: screenHeight! * 0.2,
+                  callback: (val) {
+                    robot.rightJoystick = val;
+                  },
                 ),
               ],
             ),
           ),
           Expanded(
-            flex: 2,
+            flex: 100 - rightLong - leftThick,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                SizedBox(height: 10),
+                ColorPicker(
+                  width: 200,
+                  callback: (R, G, B) {
+                    robot.red = R;
+                    robot.green = G;
+                    robot.blue = B;
+                  },
+                ),
+              ],
+            ),
+          ),
+          Expanded(
+            flex: leftThick,
             child: HorizontalJoystick(
               long: screenWidth!,
-              thickness: screenHeight! * leftThick,
+              thickness: screenHeight! * leftThick.toDouble() / 100,
               callback: (val) {
                 robot.leftJoystick = val;
               },

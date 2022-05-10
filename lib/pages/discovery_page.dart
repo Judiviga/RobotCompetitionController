@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bluetooth_serial/flutter_bluetooth_serial.dart';
 import 'package:joystick/constants.dart';
 import 'package:joystick/widgets/BluetoothDeviceListEntry.dart';
-
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class DiscoveryPage extends StatefulWidget {
   final bool start;
@@ -18,7 +18,6 @@ class _DiscoveryPage extends State<DiscoveryPage> {
   List<BluetoothDiscoveryResult> results =
       List<BluetoothDiscoveryResult>.empty(growable: true);
   bool isDiscovering = false;
-
 
   _DiscoveryPage();
 
@@ -72,13 +71,14 @@ class _DiscoveryPage extends State<DiscoveryPage> {
 
   @override
   Widget build(BuildContext context) {
+    AppLocalizations texts = AppLocalizations.of(context)!;
     return Scaffold(
       backgroundColor: kBackgroundColor,
       appBar: AppBar(
         backgroundColor: kWidgetColor,
         title: isDiscovering
-            ? const Text('Discovering devices')
-            : const Text('Discovered devices'),
+            ? Text(texts.discoveringDevices)
+            : Text(texts.discoveredDevices),
         actions: <Widget>[
           isDiscovering
               ? FittedBox(

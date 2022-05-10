@@ -43,31 +43,34 @@ class _VerticalJoystickState extends State<VerticalJoystick> {
       onPanStart: _onStart,
       onPanUpdate: _onPan,
       onPanEnd: _onPanEnd,
-      child: Container(
-        decoration: BoxDecoration(
-          borderRadius: const BorderRadius.all(Radius.circular(35)),
-          color: kWidgetColor,
-          boxShadow: const [
-            BoxShadow(
-              color: Colors.white,
-              spreadRadius: 0.5,
-              blurRadius: 0.5,
-            ),
-          ],
-        ),
-        child: ClipRRect(
-          borderRadius: const BorderRadius.all(Radius.circular(35)),
-          child: Stack(
-            children: [
-              Container(
-                width: widget.thickness,
-                height: widget.long,
-                color: kWidgetColor,
+      child: Padding(
+        padding: const EdgeInsets.all(2),
+        child: Container(
+          decoration: BoxDecoration(
+            borderRadius: const BorderRadius.all(Radius.circular(35)),
+            color: kWidgetColor,
+            boxShadow: const [
+              BoxShadow(
+                color: Colors.white,
+                spreadRadius: 0.5,
+                blurRadius: 0.5,
               ),
-              button(),
-              line(),
-              scale(),
             ],
+          ),
+          child: ClipRRect(
+            borderRadius: const BorderRadius.all(Radius.circular(35)),
+            child: Stack(
+              children: [
+                Container(
+                  width: widget.thickness,
+                  height: widget.long,
+                  color: kWidgetColor,
+                ),
+                button(),
+                line(),
+                scale(),
+              ],
+            ),
           ),
         ),
       ),

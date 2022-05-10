@@ -1,5 +1,5 @@
 {
-    "settings": "Configuracion",
+    "settings": "Configuración",
     "disabled": "Bluetooth Desactivado",
     "disconnected": "Desconectado",
     "connected": "Conectado",
@@ -8,7 +8,7 @@
     "nameEdit": "Editar nombre",
     "device": "Dispositivo",
     "deviceNew": "Seleccionar",
-    "reverseL": "Invertir Izqierda",
+    "reverseL": "Invertir Izquierda",
     "reverseR": "Invertir Derecha",
     "speedMin": "Starting Speed [PWM]",
     "speedMinMessage": "Minima velocidad para iniciar el movimiento",
@@ -25,5 +25,7 @@
     "resetMessage": "Restaurar a los valores predeterminados",
     "deleteMessage": "Eliminar el perfil actual",
     "cancel": "Cancelar",
-    "confirm": "Confirmar"
+    "confirm": "Confirmar",
+    "discoveredDevices": "Dispositivos Encontrados",
+    "discoveringDevices": "Buscar Dispositivos"
 }

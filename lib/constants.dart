@@ -19,8 +19,6 @@ Color kInputColor = Color.fromARGB(255, 153, 102, 255);
 Color kControlColor = Color.fromARGB(255, 255, 171, 25);
 Color kMathColor = Color.fromARGB(255, 64, 191, 74);
 
-
-
 TextStyle kScaleTextStyle = const TextStyle(
   color: Colors.white,
   fontSize: 12,

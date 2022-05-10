@@ -65,8 +65,8 @@ class Robot {
 
   Future disconnect() async {
     await bluetooth.disconnect();
-    stateListener!.cancel();
-    inputListener!.cancel();
+    //stateListener!.cancel();
+    // inputListener!.cancel();
   }
 
   void drive(double forward, double turn) {
@@ -219,9 +219,11 @@ class Robot {
     bluetooth.send(message);
   }
 
-  void updateSetting(RobotSettings newSettings) async {
+  Future updateSetting(RobotSettings newSettings) async {
     if (newSettings.address != settings.address) {
+      await disconnect();
       await connect(newSettings.address);
+      print('adressssss');
     }
     settings = newSettings;
     turnFactor = settings.turnFactor;

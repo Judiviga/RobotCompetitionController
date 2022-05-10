@@ -24,9 +24,9 @@ class _ColorPickerState extends State<ColorPicker> {
     Color.fromARGB(255, 0, 0, 255),
     Color.fromARGB(255, 128, 0, 255),
     Color.fromARGB(255, 225, 0, 255),
-   // Color.fromARGB(255, 128, 128, 128),
+    // Color.fromARGB(255, 128, 128, 128),
   ];
-  double _colorSliderPosition = 0;
+  double _colorSliderPosition = 90;
   Color? _currentColor;
 
   @override
@@ -100,10 +100,10 @@ class _ColorPickerState extends State<ColorPicker> {
         padding: EdgeInsets.all(15),
         child: Container(
           width: widget.width,
-          height: 15,
+          height: 30,
           decoration: BoxDecoration(
             border: Border.all(width: 0.5, color: Colors.white),
-            borderRadius: BorderRadius.circular(15),
+            borderRadius: BorderRadius.circular(5),
             gradient: LinearGradient(colors: _colors),
           ),
           child: CustomPaint(
@@ -120,8 +120,13 @@ class _SliderIndicatorPainter extends CustomPainter {
   _SliderIndicatorPainter(this.position);
   @override
   void paint(Canvas canvas, Size size) {
-    canvas.drawCircle(
-        Offset(position, size.height / 2), 12, Paint()..color = Colors.white);
+    canvas.drawLine(
+      Offset(position, -10),
+      Offset(position, size.height + 10),
+      Paint()
+        ..color = Colors.white
+        ..strokeWidth = 3,
+    );
   }
 
   @override
