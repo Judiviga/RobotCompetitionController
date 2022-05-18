@@ -44,5 +44,6 @@ TextStyle kCodeBlockText = TextStyle(
 );
 
 List<RobotSettings> settingsList = List<RobotSettings>.empty(growable: true);
+
 int activeSettings = 0;
 Robot robot = Robot(settingsList[activeSettings]);

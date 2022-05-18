@@ -15,7 +15,7 @@
     "@connected": {
         "description": ""
     },
-    "profile": "Select Profile",
+    "profile": "Select robot",
     "@profile": {
         "description": ""
     },
@@ -51,11 +51,27 @@
     "@speedMinMessage": {
         "description": ""
     },
-    "speedMax": "Max Speed [PWM]",
+    "speedMax": "Speed",
     "@speedMax": {
         "description": ""
     },
-    "speedMaxMessage": "Highest value for the PWM, lower this value to limit the speed of the robot",
+    "speedSlow": "Slow",
+    "@speedSlow": {
+        "description": ""
+    },
+    "speedNormal": "Normal",
+    "@speedNormal": {
+        "description": ""
+    },
+    "speedFast": "Fast",
+    "@speedFast": {
+        "description": ""
+    },
+    "speedTurbo": "Turbo",
+    "@speedTurbo": {
+        "description": ""
+    },
+    "speedMaxMessage": "Limits the maximum speed (PWM) of the robot\n\n Slow 100\n Normal 150\n Fast 200\n Turbo 255",
     "@speedMaxMessage": {
         "description": ""
     },
@@ -91,11 +107,11 @@
     "@resetMessage": {
         "description": ""
     },
-    "deleteMessage": "Delete the current profile",
+    "deleteMessage": "Delete the current robot",
     "@deleteMessage": {
         "description": ""
     },
-    "delete": "Delete Profile",
+    "delete": "Delete Robot",
     "@delete": {
         "description": ""
     },

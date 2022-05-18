@@ -20,6 +20,7 @@ class _BluetoothPage extends State<SettingsPage> {
   bool _enabled = false;
   StreamSubscription? listener;
   RobotSettings currentRobot = settingsList[activeSettings];
+  int speedLevel = 2;
 
   @override
   void initState() {
@@ -137,7 +138,7 @@ class _BluetoothPage extends State<SettingsPage> {
               },
             ),
           ),
-          Line(),
+          /* Line(),
           ListTile(
             title: Text(texts.name, style: kTitleText),
             subtitle: Text(currentRobot.name, style: kSubtitleText),
@@ -182,8 +183,8 @@ class _BluetoothPage extends State<SettingsPage> {
                 });
               },
             ),
-          ),
-          Line(),
+          ),*/
+          /* Line(),
           SwitchListTile(
             title: Text(texts.reverseL, style: kTitleText),
             inactiveTrackColor: kWidgetColor,
@@ -202,8 +203,8 @@ class _BluetoothPage extends State<SettingsPage> {
               await SettingsStorage.saveSetting(currentRobot);
               setState(() {});
             },
-          ),
-          Line(),
+          ),*/
+          /* Line(),
           SwitchListTile(
             title: Text(texts.reverseR, style: kTitleText),
             inactiveTrackColor: kWidgetColor,
@@ -222,8 +223,8 @@ class _BluetoothPage extends State<SettingsPage> {
               await SettingsStorage.saveSetting(currentRobot);
               setState(() {});
             },
-          ),
-          Line(),
+          ),*/
+          /* Line(),
           ValueTile(
             title: texts.speedMin,
             subtitle: currentRobot.minPWM.round().toString(),
@@ -240,15 +241,15 @@ class _BluetoothPage extends State<SettingsPage> {
               await SettingsStorage.saveSetting(currentRobot);
               setState(() {});
             },
-          ),
+          ),*/
           Line(),
           ValueTile(
             title: texts.speedMax,
-            subtitle: currentRobot.maxPWM.round().toString(),
+            subtitle: speedNameList[currentRobot.speedLevel],
             text: texts.speedMaxMessage,
             onChange: (increment) async {
               settingsList[activeSettings] = settingsList[activeSettings].edit(
-                maxPWM: currentRobot.maxPWM + increment,
+                speedLevel: currentRobot.speedLevel + increment.toInt(),
               );
               currentRobot = settingsList[activeSettings];
               if (activeSettings == settingsList.length - 1) {
@@ -555,3 +556,10 @@ class Line extends StatelessWidget {
     );
   }
 }
+
+List speedNameList = [
+  'Slow',
+  'Normal',
+  'Fast',
+  'Turbo',
+];

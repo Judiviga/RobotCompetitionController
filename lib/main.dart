@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:joystick/models/robot_settings.dart';
 import 'package:joystick/pages/code_page.dart';
 import 'package:joystick/pages/initial_page.dart';
 import 'package:joystick/pages/settings_page.dart';
@@ -19,8 +20,40 @@ void main() async {
     await SettingsStorage.init();
     settingsList = await SettingsStorage.getList();
     activeSettings = SettingsStorage.loadActive();
+
+    if (settingsList.length == 1) {
+      settingsList = [
+        RobotSettings(
+          id: '0',
+          name: 'COBRA 1',
+          address: '7C:9E:BD:48:D1:52',
+        ),
+        RobotSettings(
+          id: '1',
+          name: 'COBRA 2',
+          address: '7C:9E:BD:48:4D:1A',
+        ),
+        RobotSettings(
+          id: '2',
+          name: 'COBRA 3',
+          address: '7C:9E:BD:48:4D:CE',
+        ),
+        RobotSettings(
+          id: '3',
+          name: 'COBRA 4',
+          address: '7C:9E:BD:60:DA:82',
+          minPWM: 60,
+        ),
+        RobotSettings(id: settingsList.length.toString()),
+      ];
+      await SettingsStorage.saveSetting(settingsList[0]);
+      await SettingsStorage.saveSetting(settingsList[1]);
+      await SettingsStorage.saveSetting(settingsList[2]);
+      await SettingsStorage.saveSetting(settingsList[3]);
+    }
     // SettingsStorage.deleteSetting('1');
     //activeSettings = 0;
+    print(settingsList.length);
     runApp(Controller());
   });
 }

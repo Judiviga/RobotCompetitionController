@@ -95,7 +95,17 @@ class Robot {
       }
     } else if (state.index <= _moveState.fullSpeed.index) {
       //////////////////////////////////////////straight
-      targetL = targetL * correction;
+      if (targetL > 0) {
+        targetL = targetL * correction;
+      } else {
+        targetL = targetL / correction;
+      }
+      if (targetR > 0) {
+        targetR = targetR / correction;
+      } else {
+        targetR = targetR * correction;
+      }
+
       targetR = targetR;
 
       if (targetR - R > settings.maxAccel) {
@@ -163,9 +173,9 @@ class Robot {
 
 //////////////////////////////////////////////////////////
 
-    outL = L;
+    outL = -L;
     outR = R;
-    if (settings.reverseL) outL = -L;
+    if (settings.reverseL) outL = L;
     if (settings.reverseR) outR = -R;
 
     if (outL.abs() > settings.maxPWM) outL = settings.maxPWM * outL.sign;
@@ -223,7 +233,6 @@ class Robot {
     if (newSettings.address != settings.address) {
       await disconnect();
       await connect(newSettings.address);
-      print('adressssss');
     }
     settings = newSettings;
     turnFactor = settings.turnFactor;
