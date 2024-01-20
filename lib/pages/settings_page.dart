@@ -10,16 +10,17 @@ import 'package:joystick/models/settings_storage.dart';
 import 'package:joystick/widgets/show_alert.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
-class BluetoothPage extends StatefulWidget {
-  static const String id = 'BluetoothPage';
+class SettingsPage extends StatefulWidget {
+  static const String id = 'SettingsPage';
   @override
   _BluetoothPage createState() => _BluetoothPage();
 }
 
-class _BluetoothPage extends State<BluetoothPage> {
+class _BluetoothPage extends State<SettingsPage> {
   bool _enabled = false;
   StreamSubscription? listener;
   RobotSettings currentRobot = settingsList[activeSettings];
+  int speedLevel = 2;
 
   @override
   void initState() {
@@ -88,6 +89,10 @@ class _BluetoothPage extends State<BluetoothPage> {
             height: 2,
           ),
           ListTile(
+            title: Text(texts.name, style: kTitleText),
+            subtitle: Text(currentRobot.name, style: kSubtitleText),
+          ),
+          ListTile(
             title: Text(texts.device, style: kTitleText),
             subtitle: Text(currentRobot.address, style: kSubtitleText),
             trailing: GestureDetector(
@@ -137,7 +142,7 @@ class _BluetoothPage extends State<BluetoothPage> {
               },
             ),
           ),
-          Line(),
+          /* Line(),
           ListTile(
             title: Text(texts.name, style: kTitleText),
             subtitle: Text(currentRobot.name, style: kSubtitleText),
@@ -182,8 +187,8 @@ class _BluetoothPage extends State<BluetoothPage> {
                 });
               },
             ),
-          ),
-          Line(),
+          ),*/
+          /* Line(),
           SwitchListTile(
             title: Text(texts.reverseL, style: kTitleText),
             inactiveTrackColor: kWidgetColor,
@@ -202,8 +207,8 @@ class _BluetoothPage extends State<BluetoothPage> {
               await SettingsStorage.saveSetting(currentRobot);
               setState(() {});
             },
-          ),
-          Line(),
+          ),*/
+          /* Line(),
           SwitchListTile(
             title: Text(texts.reverseR, style: kTitleText),
             inactiveTrackColor: kWidgetColor,
@@ -222,8 +227,8 @@ class _BluetoothPage extends State<BluetoothPage> {
               await SettingsStorage.saveSetting(currentRobot);
               setState(() {});
             },
-          ),
-          Line(),
+          ),*/
+          /* Line(),
           ValueTile(
             title: texts.speedMin,
             subtitle: currentRobot.minPWM.round().toString(),
@@ -240,15 +245,15 @@ class _BluetoothPage extends State<BluetoothPage> {
               await SettingsStorage.saveSetting(currentRobot);
               setState(() {});
             },
-          ),
+          ),*/
           Line(),
           ValueTile(
             title: texts.speedMax,
-            subtitle: currentRobot.maxPWM.round().toString(),
+            subtitle: speedNameList[currentRobot.speedLevel],
             text: texts.speedMaxMessage,
             onChange: (increment) async {
               settingsList[activeSettings] = settingsList[activeSettings].edit(
-                maxPWM: currentRobot.maxPWM + increment,
+                speedLevel: currentRobot.speedLevel + increment.toInt(),
               );
               currentRobot = settingsList[activeSettings];
               if (activeSettings == settingsList.length - 1) {
@@ -555,3 +560,10 @@ class Line extends StatelessWidget {
     );
   }
 }
+
+List speedNameList = [
+  'Slow',
+  'Normal',
+  'Fast',
+  'Turbo',
+];

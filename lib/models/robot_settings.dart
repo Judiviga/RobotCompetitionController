@@ -1,3 +1,10 @@
+List<double> speedList = [
+  100,
+  150,
+  200,
+  255,
+];
+
 class RobotSettings {
   final String id;
   final String name;
@@ -10,6 +17,7 @@ class RobotSettings {
   final double maxAccel;
   final double turnFactor;
   final double correction;
+  final int speedLevel;
 
   const RobotSettings({
     this.id = '',
@@ -18,11 +26,12 @@ class RobotSettings {
     this.hz = 20,
     this.reverseL = false, //
     this.reverseR = false, //
-    this.minPWM = 60, //
-    this.maxPWM = 255, //
-    this.maxAccel = 25, //
-    this.turnFactor = 0.30, //
+    this.minPWM = 0, //
+    this.maxPWM = 200, //
+    this.maxAccel = 22, //
+    this.turnFactor = 0.60, //
     this.correction = 1,
+    this.speedLevel = 2,
   });
 
   RobotSettings edit({
@@ -37,6 +46,7 @@ class RobotSettings {
     double? maxAccel,
     double? turnFactor,
     double? correction,
+    int? speedLevel,
   }) {
     if (hz != null) {
       if (hz > 100) hz = 100;
@@ -45,10 +55,12 @@ class RobotSettings {
     if (minPWM != null) {
       if (minPWM < 0) minPWM = 0;
     }
-    if (maxPWM != null) {
-      if (maxPWM < 0) maxPWM = 0;
-      if (maxPWM > 255) maxPWM = 255;
+    if (speedLevel != null) {
+      if (speedLevel > 3) speedLevel = 3;
+      if (speedLevel < 0) speedLevel = 0;
+      maxPWM = speedList[speedLevel];
     }
+
     if (maxAccel != null) {
       if (maxAccel < 1) maxAccel = 1;
     }
@@ -65,6 +77,7 @@ class RobotSettings {
       maxAccel: maxAccel ?? this.maxAccel,
       turnFactor: turnFactor ?? this.turnFactor,
       correction: correction ?? this.correction,
+      speedLevel: speedLevel ?? this.speedLevel,
     );
   }
 
@@ -80,6 +93,7 @@ class RobotSettings {
         maxAccel: json['maxAccel'],
         turnFactor: json['turnFactor'],
         correction: json['correction'],
+        speedLevel: json['speedLevel'],
       );
 
   Map<String, dynamic> toJson() => {
@@ -94,6 +108,7 @@ class RobotSettings {
         'maxAccel': maxAccel,
         'turnFactor': turnFactor,
         'correction': correction,
+        'speedLevel': speedLevel,
       };
 
   RobotSettings reset() {
@@ -104,11 +119,12 @@ class RobotSettings {
       hz: 20,
       reverseL: false,
       reverseR: false,
-      minPWM: 60,
-      maxPWM: 255,
-      maxAccel: 25,
-      turnFactor: 0.30,
+      minPWM: 0,
+      maxPWM: 200,
+      maxAccel: 22,
+      turnFactor: 0.60,
       correction: 1,
+      speedLevel: 2,
     );
   }
 

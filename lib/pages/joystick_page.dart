@@ -1,11 +1,14 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:joystick/pages/settings_page.dart';
 import 'package:joystick/constants.dart';
+import 'package:joystick/models/bluetooth_interface.dart';
+import 'package:joystick/pages/settings_page.dart';
+import 'package:joystick/widgets/color_picker.dart';
 import 'package:joystick/widgets/horizontal_joystick.dart';
 import 'package:joystick/widgets/indicator.dart';
-import 'package:joystick/models/robot_interface.dart';
 import 'package:joystick/widgets/vertical_joystick.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:fullscreen/fullscreen.dart';
 
 class JoystickPage extends StatefulWidget {
   static const String id = 'JoystickPage';
@@ -14,19 +17,19 @@ class JoystickPage extends StatefulWidget {
 }
 
 class _JoystickPageState extends State<JoystickPage> {
-  Robot robot = Robot(settingsList[activeSettings]);
-
-  double rightLong = 0.5;
-  double leftThick = 0.2;
+  int rightLong = 50;
+  int leftThick = 22;
+  //StreamSubscription? inputListener; //bluetooth input stream
+  String input = '-';
 
   @override
   void initState() {
+    robot.green = 255;
     super.initState();
   }
 
   @override
   void dispose() {
-    robot.disconnect();
     super.dispose();
   }
 
@@ -40,86 +43,78 @@ class _JoystickPageState extends State<JoystickPage> {
       screenWidth = MediaQuery.of(context).size.height;
     }
     AppLocalizations texts = AppLocalizations.of(context)!;
-
+    FullScreen.enterFullScreen(FullScreenMode.EMERSIVE_STICKY);
+    /*inputListener = bluetooth.getinput.listen(
+      (String i) {
+        if (i != input) {
+          setState(() {});
+        }
+        input = i;
+        print(input.toString());
+      },
+    );*/
     return Scaffold(
       backgroundColor: kBackgroundColor,
       body: Column(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           Expanded(
-            flex: 8,
+            flex: rightLong,
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              crossAxisAlignment: CrossAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                Expanded(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                      const Expanded(
-                        child: CircleBoton(
-                          text: 'B',
-                        ),
-                      ),
-                      Expanded(
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          crossAxisAlignment: CrossAxisAlignment.stretch,
-                          children: [
-                            Padding(
-                              padding: const EdgeInsets.symmetric(vertical: 20),
-                              child: Indicator(
-                                name: robot.settings.name,
-                              ),
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.symmetric(vertical: 80),
-                              child: Boton(
-                                text: texts.settings,
-                                onTap: () {
-                                  Navigator.pushNamed(context, BluetoothPage.id)
-                                      .then((value) {
-                                    robot.updateSetting(
-                                        settingsList[activeSettings]);
-                                    setState(() {});
-                                  });
-                                },
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
+                Indicator(
+                  name: robot.settings.name,
+                ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 80),
+                  child: Boton(
+                    text: texts.settings,
+                    onTap: () {
+                      // FullScreen.exitFullScreen();
+                      Navigator.pushNamed(context, SettingsPage.id)
+                          .then((value) async {
+                        await robot.updateSetting(settingsList[activeSettings]);
+                        setState(() {});
+                      });
+                      // Navigator.pop(context);
+                    },
                   ),
                 ),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.end,
-                    children: [
-                      VerticalJoystick(
-                        long: screenHeight! * rightLong,
-                        thickness: screenHeight! * 0.2,
-                        callback: (val) {
-                          robot.rightJoystick = val;
-                        },
-                      ),
-                      const Expanded(
-                        child: CircleBoton(
-                          text: 'A',
-                        ),
-                      )
-                    ],
-                  ),
+                VerticalJoystick(
+                  long: screenHeight! * rightLong.toDouble() / 100,
+                  thickness: screenHeight! * 0.2,
+                  callback: (val) {
+                    robot.rightJoystick = val;
+                  },
                 ),
               ],
             ),
           ),
           Expanded(
-            flex: 2,
+            flex: 100 - rightLong - leftThick,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                SizedBox(height: 10),
+                ColorPicker(
+                  width: 200,
+                  callback: (R, G, B) {
+                    robot.red = R;
+                    robot.green = G;
+                    robot.blue = B;
+                  },
+                ),
+              ],
+            ),
+          ),
+          Expanded(
+            flex: leftThick,
             child: HorizontalJoystick(
               long: screenWidth!,
-              thickness: screenHeight! * leftThick,
+              thickness: screenHeight! * leftThick.toDouble() / 100,
               callback: (val) {
                 robot.leftJoystick = val;
               },
@@ -143,7 +138,11 @@ class CircleBoton extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        print('boton');
+        if (robot.boton == 1) {
+          robot.boton = 0;
+        } else {
+          robot.boton = 1;
+        }
       },
       child: Container(
         color: Colors.transparent,
@@ -192,6 +191,7 @@ class Boton extends StatelessWidget {
     return GestureDetector(
       child: Container(
         width: 40,
+        height: 150,
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(20),
           border: Border.all(
