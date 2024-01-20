@@ -36,7 +36,7 @@ void main() async {
         RobotSettings(
           id: '2',
           name: 'COBRA 3',
-          address: '7C:9E:BD:48:4D:CE',
+          address: '0C:B8:15:C9:B4:FE',
         ),
         RobotSettings(
           id: '3',
@@ -53,7 +53,7 @@ void main() async {
     }
     // SettingsStorage.deleteSetting('1');
     //activeSettings = 0;
-    print(settingsList.length);
+   // print(settingsList.length);
     runApp(Controller());
   });
 }

@@ -18,7 +18,7 @@ class Bluetooth {
   bool _connecting = false;
   String? device;
   StreamController<BlueState> stateBroadcast = StreamController.broadcast();
-  StreamController<List<int>> inputBroadcast = StreamController.broadcast();
+  StreamController<String> inputBroadcast = StreamController.broadcast();
 
   Bluetooth() {
     _connected = connection?.isConnected ?? false;
@@ -39,7 +39,7 @@ class Bluetooth {
   }
 
   Stream<BlueState> get getState => stateBroadcast.stream;
-  Stream<List<int>> get getinput => inputBroadcast.stream;
+  Stream<String> get getinput => inputBroadcast.stream;
 
   Future<void> connect(String ad) async {
     _connecting = true;
@@ -54,12 +54,12 @@ class Bluetooth {
           print('Connected to the device');
           connection!.input!.listen((Uint8List data) {
             String raw = ascii.decode(data);
-            var split = raw.split(',');
+            /*var split = raw.split(',');
             List<int> inputList = List<int>.empty(growable: true);
             for (String value in split) {
               inputList.add(int.parse(value));
-            }
-            inputBroadcast.add(inputList);
+            }*/
+            inputBroadcast.add(raw);
           }).onDone(() {
             print('Disconnected by remote request');
           });
@@ -88,7 +88,7 @@ class Bluetooth {
   void send(String message) async {
     if (_connected && _enabled) {
       try {
-        print(message);
+        //print(message);
         connection!.output.add(Uint8List.fromList(utf8.encode(message + '\n')));
       } catch (e) {
         connection?.dispose();

@@ -48,8 +48,8 @@ class _IndicatorState extends State<Indicator> {
 
     if (!_enabled) {
       color = Colors.grey[600]!;
-      title = texts.disabled;
-      subtitle = '';
+      title = widget.name;
+      subtitle = texts.disabled;
       state = 'OFF';
     } else if (!_connected) {
       color = Colors.red;

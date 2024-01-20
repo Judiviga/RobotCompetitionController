@@ -1,5 +1,7 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:joystick/constants.dart';
+import 'package:joystick/models/bluetooth_interface.dart';
 import 'package:joystick/pages/settings_page.dart';
 import 'package:joystick/widgets/color_picker.dart';
 import 'package:joystick/widgets/horizontal_joystick.dart';
@@ -17,6 +19,8 @@ class JoystickPage extends StatefulWidget {
 class _JoystickPageState extends State<JoystickPage> {
   int rightLong = 50;
   int leftThick = 22;
+  //StreamSubscription? inputListener; //bluetooth input stream
+  String input = '-';
 
   @override
   void initState() {
@@ -40,6 +44,15 @@ class _JoystickPageState extends State<JoystickPage> {
     }
     AppLocalizations texts = AppLocalizations.of(context)!;
     FullScreen.enterFullScreen(FullScreenMode.EMERSIVE_STICKY);
+    /*inputListener = bluetooth.getinput.listen(
+      (String i) {
+        if (i != input) {
+          setState(() {});
+        }
+        input = i;
+        print(input.toString());
+      },
+    );*/
     return Scaffold(
       backgroundColor: kBackgroundColor,
       body: Column(
@@ -125,7 +138,11 @@ class CircleBoton extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        print('boton');
+        if (robot.boton == 1) {
+          robot.boton = 0;
+        } else {
+          robot.boton = 1;
+        }
       },
       child: Container(
         color: Colors.transparent,

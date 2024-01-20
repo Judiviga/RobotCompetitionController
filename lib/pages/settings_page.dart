@@ -89,6 +89,10 @@ class _BluetoothPage extends State<SettingsPage> {
             height: 2,
           ),
           ListTile(
+            title: Text(texts.name, style: kTitleText),
+            subtitle: Text(currentRobot.name, style: kSubtitleText),
+          ),
+          ListTile(
             title: Text(texts.device, style: kTitleText),
             subtitle: Text(currentRobot.address, style: kSubtitleText),
             trailing: GestureDetector(

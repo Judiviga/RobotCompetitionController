@@ -29,6 +29,7 @@ class Robot {
 
   double turnFactor = 0; //corrected turn factor
   double correction = 0;
+  int boton = 0;
 
   ///loop variables
   double L = 0;
@@ -208,7 +209,7 @@ class Robot {
         return _moveState.midTurn;
       }
     } else {
-      turnFactor = settings.turnFactor * 1.2;
+      turnFactor = settings.turnFactor * 3;
       correction = settings.correction;
       if (x == 0) {
         return _moveState.fullSpeed;
@@ -219,13 +220,15 @@ class Robot {
   }
 
   void output() {
-    String val1 = outR.toString();
-    String val2 = outL.toString();
+   
+    String val1 = outR.round().toString();
+    String val2 = outL.round().toString();
     String val3 = red.toString();
     String val4 = green.toString();
     String val5 = blue.toString();
 
     String message = val1 + ',' + val2 + ',' + val3 + ',' + val4 + ',' + val5;
+    print(outL.round().toString()+','+outR.round().toString());
     bluetooth.send(message);
   }
 
